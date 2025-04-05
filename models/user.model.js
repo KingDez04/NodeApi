@@ -32,6 +32,7 @@ const userSchema = new Schema(
       type: String,
       trim: true,
       default: "reader",
+      enum: ["admin", "editor", "reader"],
     },
   },
   { timestamps: true }

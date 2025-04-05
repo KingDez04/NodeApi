@@ -28,12 +28,13 @@ const getUser = async (req, res) => {
 
 const addUser = async (req, res) => {
   try {
-    const { email, password, username } = req.body;
+    const { email, password, username, role } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await UserModel.create({
       email,
       password: hashedPassword,
       username,
+      role,
     });
     if (!newUser) {
       return res

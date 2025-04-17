@@ -8,12 +8,13 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/user.controller.js";
+import authMiddleware from "../middlewares/auth.middleware.js";
 
 router.get("/", getUsers);
-router.get("/:id", getUser);
+router.get("/:id", authMiddleware, getUser);
 router.post("/signup", addUser);
 router.post("/login", checkUser);
-router.put("/:id", updateUser);
-router.delete("/:id", deleteUser);
+router.put("/:id", authMiddleware, updateUser);
+router.delete("/:id", authMiddleware, deleteUser);
 
 export default router;

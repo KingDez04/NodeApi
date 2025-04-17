@@ -7,11 +7,12 @@ import {
   updateMovie,
   deleteMovie,
 } from "../controllers/movie.controller.js";
+import authMiddleware from "../middlewares/auth.middleware.js";
 
 router.get("/", getMovies);
 router.get("/:id", getMovie);
-router.post("/", addMovie);
-router.put("/:id", updateMovie);
-router.delete("/:id", deleteMovie);
+router.post("/", authMiddleware, addMovie);
+router.put("/:id", authMiddleware, updateMovie);
+router.delete("/:id", authMiddleware, deleteMovie);
 
 export default router;

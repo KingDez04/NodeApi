@@ -2,7 +2,7 @@ import MovieModel from "../models/movie.model.js";
 
 const getMovies = async (_, res) => {
   try {
-    const movies = await MovieModel.find({});
+    const movies = await MovieModel.find({}).lean();
     if (!movies) {
       return res.status(404).json({ message: "No movies available!" });
     }
@@ -15,7 +15,7 @@ const getMovies = async (_, res) => {
 const getMovie = async (req, res) => {
   try {
     const { id } = req.params;
-    const movie = await MovieModel.findById(id);
+    const movie = await MovieModel.findById(id).lean();
     if (!movie) {
       return res.status(404).json({ message: "Movie not found!" });
     }
@@ -56,7 +56,7 @@ const updateMovie = async (req, res) => {
 const deleteMovie = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedMovie = await MovieModel.findById(id);
+    const deletedMovie = await MovieModel.findById(id).lean();
     const movie = await MovieModel.findByIdAndDelete(id);
     if (!movie) {
       return res.status(404).json({ message: "Movie not found!" });

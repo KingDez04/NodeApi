@@ -4,7 +4,7 @@ import UserModel from "../models/user.model.js";
 
 const getUsers = async (_, res) => {
   try {
-    const users = await UserModel.find();
+    const users = await UserModel.find().lean();
     if (users.length === 0) {
       return res.status(404).json({ message: "No users available!" });
     }
@@ -17,7 +17,7 @@ const getUsers = async (_, res) => {
 const getUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id).lean();
     if (!user) {
       return res.status(404).json({ message: "User not found!" });
     }
@@ -56,7 +56,7 @@ const checkUser = async (req, res) => {
         .status(400)
         .json({ message: "Email and password are required!" });
     }
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ email }).lean();
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password!" });
     }
@@ -95,7 +95,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedUser = await UserModel.findById(id);
+    const deletedUser = await UserModel.findById(id).lean();
     const user = await UserModel.findByIdAndDelete(id);
     if (!user) {
       return res.status(404).json({ message: "User not found!" });

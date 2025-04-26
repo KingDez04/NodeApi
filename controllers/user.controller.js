@@ -2,6 +2,10 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import UserModel from "../models/user.model.js";
 
+const createToken = (id, role) => {
+  return jwt.sign({ id, role }, process.env.TOKEN, { expiresIn: "1h" });
+};
+
 const getUsers = async (_, res) => {
   try {
     const users = await UserModel.find().lean();
@@ -29,19 +33,8 @@ const getUser = async (req, res) => {
 
 const addUser = async (req, res) => {
   try {
-    const { email, password, username, role } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await UserModel.create({
-      email,
-      password: hashedPassword,
-      username,
-      role,
-    });
-    const token = jwt.sign(
-      { id: newUser._id, role: newUser.role },
-      process.env.TOKEN,
-      { expiresIn: "1h" }
-    );
+    const newUser = await UserModel.create(req.body);
+    const token = createToken(newUser._id, newUser.role);
     res.status(201).json({ message: "Signup successful", token });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -64,13 +57,7 @@ const checkUser = async (req, res) => {
     if (!auth) {
       return res.status(400).json({ message: "Invalid email or password!" });
     }
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.TOKEN,
-      {
-        expiresIn: "1h",
-      }
-    );
+    const token = createToken(user._id, user.role);
     res.status(200).json({ message: "Login successful", token });
   } catch (error) {
     res.status(500).json({ message: error.message });
